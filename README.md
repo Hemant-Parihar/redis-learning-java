@@ -1,6 +1,40 @@
-# Redis Learning Project (Java)
+# Redis vs PostgreSQL Load Handling
 
-This project provides practical examples for learning Redis and comparing its performance with PostgreSQL. It demonstrates various Redis data structures, operations, and common use cases like caching, pub/sub, and more.
+This project compares the load handling capabilities of Redis and PostgreSQL datastores.
+
+## Load Characteristics
+
+### Redis
+- In-memory data store capable of handling 100,000+ operations per second
+- Redis cluster configurations can scale to 1-5 million requests per second
+- Excels at high-throughput read/write operations and real-time data processing
+- Optimal for caching, session management, real-time analytics, and leaderboards
+- Scales horizontally through clustering
+- Performance degrades when dataset exceeds available RAM
+
+### PostgreSQL
+- Disk-based relational database handling up to 50K-100K simple get queries per second
+- Excellent for complex queries and transactions with ACID compliance
+- Suitable for persistent storage of structured data with complex relationships
+- Vertical scaling with some horizontal scaling options
+- Performance relies on proper indexing and query optimization
+
+## Performance Comparison Benchmarks
+
+The project includes benchmarks comparing:
+- Single/batch read/write operations
+- Atomic operations and transactions
+- High-frequency counter increments
+- Sorted data retrieval
+- Complex set operations
+
+## Running Benchmarks
+
+```bash
+docker-compose up -d
+mvn clean package
+java -jar target/redis-learning-java-1.0-SNAPSHOT.jar
+```
 
 ## Project Overview
 
@@ -95,18 +129,6 @@ java -jar target/redis-learning-java-1.0-SNAPSHOT.jar
 4. Run the Performance Comparison to understand Redis performance benefits
 5. Try the Redis Pub/Sub example to learn about messaging
 6. Understand caching patterns with the Caching Example
-
-## Performance Comparison
-
-The project includes benchmark tests that compare:
-
-- Single and batch read/write operations
-- Atomic operations and transactions
-- Counters and increments
-- Sorted data retrieval
-- Set operations
-
-Each test outputs detailed timing information to help understand the performance characteristics of both Redis and PostgreSQL.
 
 ## License
 
