@@ -19,6 +19,21 @@ This project compares the load handling capabilities of Redis and PostgreSQL dat
 - Vertical scaling with some horizontal scaling options
 - Performance relies on proper indexing and query optimization
 
+## Redis Key Expiration Behavior
+
+Redis handles key expiration through two mechanisms:
+
+1. **Passive expiration**: When a client attempts to access an expired key, Redis removes it at that moment
+2. **Active expiration**: A background process periodically samples random keys to find and remove expired ones
+
+Important notes about expiration notifications:
+- Notifications are sent **after** Redis actually removes the expired key, not exactly when the TTL reaches zero
+- There can be a delay between when a key's TTL expires and when the notification is triggered
+- Under high load, there might be significant delays in receiving expiration events
+- The sampling nature of the active expiration means not all keys are checked continuously
+
+This project includes examples of handling Redis key expiration events using keyspace notifications.
+
 ## Performance Comparison Benchmarks
 
 The project includes benchmarks comparing:
