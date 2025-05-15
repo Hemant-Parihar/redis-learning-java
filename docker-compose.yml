@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Redis service configuration
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis-learning
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --requirepass redispass
+    networks:
+      - redis-network
+    restart: unless-stopped
+
+  # PostgreSQL service configuration
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-learning
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespass
+      POSTGRES_DB: rediscomparison
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - redis-network
+    restart: unless-stopped
+
+  # Add a Redis Commander (web UI for Redis) for easier visualization
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:redispass
+    ports:
+      - "8081:8081"
+    networks:
+      - redis-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # Add pgAdmin for PostgreSQL management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-learning
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@example.com
+      PGADMIN_DEFAULT_PASSWORD: pgadminpass
+    ports:
+      - "8082:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - redis-network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+# Persistent volumes for data storage
+volumes:
+  redis-data:
+  postgres-data:
+  pgadmin-data:
+
+# Network for container communication
+networks:
+  redis-network:
+    driver: bridge 
